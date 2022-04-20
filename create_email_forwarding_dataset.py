@@ -22,11 +22,10 @@ class CreateEmailForwardingDataset():
         email_address_line = []
         html_path_ereceipt = []
 
-        print("\n\nCleaning Receipt:",)
-        path,filename_keys = self.downloadHTML()
+        print("\n\nDataset are creating:",)
+        path,filename_keys = self.downloadKey()
         for filename in filename_keys:
             text = self.cleanText(path,filename)
-            print("filename",filename)
             from_address_pattern = re.compile(r'\-{1,}\s+From:.*\<(.*)\>\s+Date|Begin forwarded message:\s+\s+.*From:.*\<(.*)\>\s+.*Date|message:\s+On\s.*(?:AM|PM)\,\s(.*)\swrote')
             transaction_date_pattern = re.compile(r'\-{1,}\s+From:.*\s+Date\:\s(.*)\s\s+Subject|Begin forwarded message:\s+\s+.*From:.*\<.*\>\s+.*Date\:\s(.*(?:AM|PM))|message:\s+On\s(.*(?:AM|PM))\,\s.*\swrote')
             subject_pattern = re.compile(r'\-{1,}\s+From:.*\s+Date.*\s+Subject\:\s(.*)\s\s+|Begin forwarded message:\s+\s+.*From:.*\<.*\>\s+.*Date.*\s+.*To.*\s.*Subject\:\s(.*)\s|Subject:\sFw\:\s(.*\s+.*)')
@@ -93,7 +92,7 @@ class CreateEmailForwardingDataset():
             print(f'Error: {e}')
             return e
 
-    def downloadHTML(self):
+    def downloadKey(self):
         # Create Session
         session = boto3.Session(
             aws_access_key_id=os.getenv('ACCESS_KEY_ID'),
@@ -114,7 +113,8 @@ class CreateEmailForwardingDataset():
 
     def uploadToCSV(self, dict):
         df = pd.DataFrame(dict)
-        df.to_csv("email_forwarding_dataset4.csv", mode="w", index=[0])
+        print("\n\nDataset are created",)
+        df.to_csv("email_forwarding_dataset.csv", mode="w", index=[0])
 
 
 if __name__ == "__main__":
